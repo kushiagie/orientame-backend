@@ -1,0 +1,17 @@
+{
+  "name": "orientame-backend",
+  "version": "1.0.0",
+  "description": "Backend seguro para OrientaMe — proxy de Gemini API",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^39.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
