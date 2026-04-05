@@ -1491,11 +1491,11 @@
                     <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm mb-6 space-y-4">
                         <div>
                             <label class="text-xs font-black text-slate-800 mb-1.5 block uppercase tracking-wide">Personaje</label>
-                            <input id="characterNameIA" type="text" placeholder="Ej. Batman, Elle Woods..." class="w-full px-4 py-3 text-base bg-slate-50 rounded-xl border border-slate-200 focus:border-purple-500 font-bold text-slate-700 outline-none transition-colors" value="${state.characterNameIA}" oninput="state.characterNameIA=this.value">
+                            <input id="characterNameIA" type="text" placeholder="Ej. Batman, Elle Woods..." class="w-full px-4 py-3 text-base bg-slate-50 rounded-xl border border-slate-200 focus:border-purple-500 font-bold text-slate-700 outline-none transition-colors" value="${state.characterNameIA}" oninput="state.characterNameIA=this.value; var b=document.getElementById('btnCharacterAI'); if(b) b.disabled=(!this.value.trim()||!state.characterQuery.trim())">
                         </div>
                         <div>
                             <label class="text-xs font-black text-slate-800 mb-1.5 block uppercase tracking-wide">Tu Pregunta</label>
-                            <textarea id="characterQuery" rows="3" placeholder="Ej. ¿Vale la pena estudiar criminología?" class="w-full px-4 py-3 text-base bg-slate-50 rounded-xl border border-slate-200 focus:border-purple-500 font-bold text-slate-700 outline-none transition-colors resize-none" oninput="state.characterQuery=this.value">${state.characterQuery}</textarea>
+                            <textarea id="characterQuery" rows="3" placeholder="Ej. ¿Vale la pena estudiar criminología?" class="w-full px-4 py-3 text-base bg-slate-50 rounded-xl border border-slate-200 focus:border-purple-500 font-bold text-slate-700 outline-none transition-colors resize-none" oninput="state.characterQuery=this.value; var b=document.getElementById('btnCharacterAI'); if(b) b.disabled=(!state.characterNameIA.trim()||!this.value.trim())">${state.characterQuery}</textarea>
                         </div>
                         <button onclick="window.handleCharacterAISearch()" ${state.isCharacterAiSearching || !state.characterQuery.trim() || !state.characterNameIA.trim() ? 'disabled' : ''} class="w-full bg-purple-600 text-white py-3 rounded-xl font-black transition-transform active:scale-[0.98] disabled:opacity-50 text-sm flex justify-center items-center mt-2 shadow-md shadow-purple-200">
                             ${state.isCharacterAiSearching ? '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>' : 'Enviar Mensaje <i data-lucide="send" class="w-4 h-4 ml-2"></i>'}
