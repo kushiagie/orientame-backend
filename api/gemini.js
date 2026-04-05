@@ -1,4 +1,4 @@
-const GEMINI_MODEL = "gemini-2.5-flash-preview-09-2025";
+const GEMINI_MODEL = "gemini-2.0-flash"; //"gemini-2.5-flash-preview-09-2025";
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 const rateLimitMap = new Map();
