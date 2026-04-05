@@ -43,7 +43,7 @@
     <div id="root" class="w-full min-h-screen"></div>
 
     <script>
-        // API Key eliminada — ahora está segura en el servidor backend
+        const apiKey = "";
 
         const fetchWithRetry = async (url, options, retries = 5, delay = 1000) => {
             for (let i = 0; i < retries; i++) {
@@ -70,9 +70,8 @@
             return cleanText;
         };
 
-        // ─── BACKEND SEGURO — reemplaza llamadas directas a Gemini ───────────
-        // Cambia esta URL por la de tu backend en Vercel cuando lo despliegues
-        const BACKEND_URL = "http://localhost:3000"; // en prod: "https://tu-proyecto.vercel.app"
+        // ─── BACKEND SEGURO ───────────────────────────────────────────────────
+        const BACKEND_URL = "https://orientame-backend-bbho.vercel.app";
 
         const callGeminiBackend = async (type, payload) => {
             const response = await fetch(`${BACKEND_URL}/api/gemini`, {
@@ -81,7 +80,7 @@
                 body: JSON.stringify({ type, payload })
             });
             if (!response.ok) {
-                const err = await response.json();
+                const err = await response.json().catch(() => ({}));
                 throw new Error(err.error || `HTTP ${response.status}`);
             }
             return await response.json();
@@ -658,7 +657,7 @@
             try {
                 const prompt = `Actúa como un orientador vocacional experto en México. El usuario te pregunta por la carrera o disciplina de "${state.dictAiQuery}". Da una breve descripción de qué hacen exactamente en su día a día, menciona el salario promedio mensual real en México (MXN), y lista claramente 3 pros y 3 contras de estudiarla o ejercerla en la actualidad. Retorna ÚNICAMENTE un JSON válido con la propiedad "respuesta".`;
                 const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: "Responde en español de forma amigable. Devuelve SOLO un JSON válido con la propiedad 'respuesta'." }] }, generationConfig: { responseMimeType: "application/json" } };
-                const data = await callGeminiBackend("critical_analysis", payload);
+                const data = await callGeminiBackend("quiz_report", payload);
                 const candidate = data.candidates?.[0];
                 if (candidate?.finishReason === 'SAFETY') throw new Error("Bloqueado por filtros de seguridad de la IA.");
                 const text = candidate?.content?.parts?.[0]?.text;
@@ -733,7 +732,7 @@
             try {
                 const prompt = `Actúa como el personaje "${state.characterNameIA}" de la televisión o el cine. Un adolescente te pregunta sobre orientación vocacional: "${state.characterQuery}". Responde en primera persona, manteniendo la personalidad típica de este personaje. Dale consejos reales sobre la carrera que representa en la vida real. Retorna ÚNICAMENTE un JSON con la propiedad "respuesta".`;
                 const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }], systemInstruction: { parts: [{ text: "Responde en español. Adopta la personalidad del personaje. Devuelve SOLO un JSON válido con la propiedad 'respuesta'." }] }, generationConfig: { responseMimeType: "application/json" } };
-                const data = await callGeminiBackend("character_chat", payload);
+                const data = await callGeminiBackend("quiz_report", payload);
                 const candidate = data.candidates?.[0];
                 if (candidate?.finishReason === 'SAFETY') throw new Error("Bloqueado por filtros de seguridad de la IA.");
                 const text = candidate?.content?.parts?.[0]?.text;
@@ -1518,9 +1517,19 @@
         }
 
         const render = () => {
+            const activeId = document.activeElement?.id;
+            const selStart = document.activeElement?.selectionStart;
+            const selEnd = document.activeElement?.selectionEnd;
             const root = document.getElementById('root');
             root.innerHTML = getAppHTML();
             lucide.createIcons();
+            if (activeId) {
+                const el = document.getElementById(activeId);
+                if (el) {
+                    el.focus();
+                    try { el.setSelectionRange(selStart, selEnd); } catch(e) {}
+                }
+            }
         };
 
         // Initialize app
